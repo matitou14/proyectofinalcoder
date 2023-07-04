@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
+    "handlebars": "^4.7.7",
     "mongoose": "^7.3.1",
     "nodemon": "^1.14.9",
     "paginate": "^0.1.1",
