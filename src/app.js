@@ -5,6 +5,7 @@ import handlebars from "express-handlebars";
 import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productsRoutes.js";
+import cartViews from './routes/cartViews.js'
 import cartRoutes from "./routes/cartRoutes.js";
 import { fileURLToPath } from 'url';
 
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/users',userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
+app.use('/api/carts', cartViews);
 app.get('/', (req, res) => {
     res.render('index');
   });

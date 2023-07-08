@@ -1,13 +1,11 @@
-import { Router } from "express";
+import express from 'express';
+import * as userController from '../controllers/userControllers.js';
+
+const router = express.Router();
+
+router.get('/session/login', userController.showLoginForm);
+router.post('/session/login', userController.loginUser);
+router.post('/session/logout', userController.logoutUser);
 
 
-
-const router = Router()
-
-router.get('/register', );
-router.post('/session/register', );
-router.get('/session/login', );
-router.post('/session/login', );
-router.post('/session/logout',);
-
-export default router 
+export default router;

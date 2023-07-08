@@ -1,13 +1,15 @@
 import { Router } from "express";
+import productController from '../controllers/productsControllers.js';
 
 const router = Router()
 
+router.get('/', productController.getProducts);
+router.get('/:id', productController.getProductById);
+router.get('/pid/:pid', productController.getProductByPid);
+router.post('/', productController.addProduct);
+router.put('/:pid', productController.updateProduct);
+router.delete('/:pid', productController.deleteProduct);
 
-router.get('/', );
-router.get('/:id', );
-router.get('/pid/:pid', );
-router.post('/', );
-router.put('/:pid', );
-router.delete('/:pid', );
+
 
 export default router;
