@@ -3,7 +3,7 @@ import path, { dirname } from "path";
 import dotenv from 'dotenv'
 import handlebars from "express-handlebars";
 import mongoose from "mongoose";
-import userRoutes from "./routes/userRoutes.js";
+import sessionRoutes from "./routes/sessionRoutes.js";
 import productRoutes from "./routes/productsRoutes.js";
 import cartViews from './routes/cartViews.js'
 import cartRoutes from "./routes/cartRoutes.js";
@@ -45,7 +45,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/users',userRoutes);
+app.use('/session',sessionRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
 app.use('/api/carts', cartViews);
