@@ -1,10 +1,9 @@
 import express from 'express';
+import cartController from '../controllers/cartControllers.js';
+
 const router = express.Router();
 
-// Ruta para visualizar un carrito específico y sus productos
-router.get('/:cid', async (req, res) => {
-    
-  res.render('cart', { cart });
-});
+// Vista de un carrito específico
+router.get('/:cid', cartController.getCartById);
 
 export default router;

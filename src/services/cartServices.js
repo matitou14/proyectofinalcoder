@@ -1,65 +1,59 @@
 import Cart from '../models/cartModel.js';
 
-// Obtener el carrito de un usuario
-async function getCartByUserId(userId) {
-  return await Cart.findOne({ userId }).populate('products');
+async function getCartById(cartId) {
+  return await Cart.findById(cartId).populate('products');
 }
 
-// Crear un nuevo carrito
 async function createCart() {
   return await Cart.create({});
 }
 
-// Agregar un producto al carrito
-async function addProductToCart(userId, productId) {
-  const cart = await Cart.findOne({ userId });
+async function addProductToCart(cartId, productId) {
+  const cart = await Cart.findById(cartId);
 
   if (!cart) {
     const newCart = new Cart({
-      userId,
-      products: [productId]
+      _id: cartId,
+      products: [{ _id: productId }]
     });
     await newCart.save();
   } else {
-    if (!cart.products.includes(productId)) {
-      cart.products.push(productId);
+    if (!cart.products.some((product) => product._id.toString() === productId)) {
+      cart.products.push({ _id: productId });
       await cart.save();
     }
   }
 }
 
-// Eliminar un producto del carrito
-async function removeProductFromCart(userId, productId) {
-  const cart = await Cart.findOne({ userId });
+async function removeProductFromCart(cartId, productId) {
+  const cart = await Cart.findById(cartId);
 
-  if (cart && cart.products.includes(productId)) {
-    cart.products = cart.products.filter((id) => id.toString() !== productId);
+  if (cart) {
+    cart.products = cart.products.filter((product) => product._id.toString() !== productId);
     await cart.save();
   }
 }
-// Actualizar un carrito por su ID
+
 async function updateCart(cartId, totalPrice) {
-    return await Cart.findByIdAndUpdate(cartId, { totalPrice }, { new: true });
+  return await Cart.findByIdAndUpdate(cartId, { totalPrice }, { new: true });
+}
+
+async function updateProductInCart(cartId, productId, quantity) {
+  const cart = await Cart.findById(cartId);
+  const product = cart.products.find((product) => product._id.toString() === productId);
+
+  if (product) {
+    product.quantity = quantity;
+    await cart.save();
   }
-  
-  // Actualizar un producto en el carrito
-  async function updateProductInCart(cartId, productId, quantity) {
-    const cart = await Cart.findById(cartId);
-    const productIndex = cart.products.findIndex((product) => product._id.toString() === productId);
-  
-    if (productIndex !== -1) {
-      cart.products[productIndex].quantity = quantity;
-      await cart.save();
-    }
-  }
-  
-  // Eliminar un carrito por su ID
-  async function deleteCart(cartId) {
-    await Cart.findByIdAndDelete(cartId);
-  }
+}
+
+async function deleteCart(cartId) {
+  await Cart.findByIdAndDelete(cartId);
+}
 
 export default {
-  getCartByUserId,
+  getCartById,
   createCart,
   addProductToCart,
   removeProductFromCart,

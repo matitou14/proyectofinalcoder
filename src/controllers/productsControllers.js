@@ -1,38 +1,87 @@
 import productService from '../services/productsServices.js';
 
-const getProducts = async (req, res) => {
-  const products = await productService.getAllProducts();
-//   res.json(products);
-res.render('products', { products: products.map(prod => prod.toObject()) });
+const getProductsController = async (req, res) => {
+  try {
+    const { limit = 10, page = 1, sort, query } = req.query;
+
+    const result = await productService.getProducts(limit, page, sort, query);
+
+    const totalPages = result.totalPages;
+    const prevPage = result.prevPage;
+    const nextPage = result.nextPage;
+    const currentPage = result.page;
+    const hasPrevPage = result.hasPrevPage;
+    const hasNextPage = result.hasNextPage;
+    const prevLink = hasPrevPage ? `/products?limit=${limit}&page=${prevPage}&sort=${sort}&query=${query}` : null;
+    const nextLink = hasNextPage ? `/products?limit=${limit}&page=${nextPage}&sort=${sort}&query=${query}` : null;
+
+    res.render('products', {
+      products: result.products,
+      totalPages,
+      prevPage,
+      nextPage,
+      currentPage,
+      hasPrevPage,
+      hasNextPage,
+      prevLink,
+      nextLink
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 const getProductById = async (req, res) => {
-  const product = await productService.getProductById(req.params.id);
-  res.json(product);
+  try {
+    const productId = req.params.id;
+    const product = await productService.getProductById(productId);
+    res.render('productDetail', { product });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener el producto' });
+  }
 };
 
 const getProductByPid = async (req, res) => {
-  const product = await productService.getProductByPid(req.params.pid);
-  res.json(product);
+  try {
+    const pid = req.params.pid;
+    const product = await productService.getProductByPid(pid);
+    res.render('productDetail', { product });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener el producto' });
+  }
 };
 
 const addProduct = async (req, res) => {
-  const newProduct = await productService.createProduct(req.body);
-  res.json(newProduct);
+  try {
+    const newProduct = await productService.createProduct(req.body);
+    res.json(newProduct);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear el producto' });
+  }
 };
 
 const updateProduct = async (req, res) => {
-  const updatedProduct = await productService.updateProduct(req.params.pid, req.body);
-  res.json(updatedProduct);
+  try {
+    const pid = req.params.pid;
+    const updatedProduct = await productService.updateProduct(pid, req.body);
+    res.json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar el producto' });
+  }
 };
 
 const deleteProduct = async (req, res) => {
-  const deletedProduct = await productService.deleteProduct(req.params.pid);
-  res.json(deletedProduct);
+  try {
+    const pid = req.params.pid;
+    const deletedProduct = await productService.deleteProduct(pid);
+    res.json(deletedProduct);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar el producto' });
+  }
 };
 
 export default {
-  getProducts,
+  getProductsController,
   getProductById,
   getProductByPid,
   addProduct,

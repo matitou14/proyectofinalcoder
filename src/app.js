@@ -7,7 +7,11 @@ import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productsRoutes.js";
 import cartViews from './routes/cartViews.js'
 import cartRoutes from "./routes/cartRoutes.js";
+import session from 'express-session'
+import MongoStore  from 'connect-mongo';
 import { fileURLToPath } from 'url';
+
+
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config();
@@ -20,7 +24,20 @@ const dbCluster = process.env.DB_CLUSTER;
 
 const dbURI = `mongodb+srv://${dbUser}:${dbPassword}@${dbCluster}/${dbName}?retryWrites=true&w=majority`;
 
-
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl:dbURI,
+        dbName:'ecommerce',
+        mongoOptions:{
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
+        ttl:90
+    }),
+    secret:'Al3j0',
+    resave: true, 
+    saveUninitialized: true,
+}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', handlebars.engine());
@@ -35,6 +52,8 @@ app.use('/api/carts', cartViews);
 app.get('/', (req, res) => {
     res.render('index');
   });
+
+
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
