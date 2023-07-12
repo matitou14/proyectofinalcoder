@@ -2,6 +2,7 @@ import productService from '../services/productsServices.js';
 
 const getProductsController = async (req, res) => {
   try {
+    const user = req.session.user;
     const { limit = 10, page = 1, sort, query } = req.query;
 
     const result = await productService.getProducts(limit, page, sort, query);
@@ -17,6 +18,7 @@ const getProductsController = async (req, res) => {
 
     res.render('products', {
       products: result.products,
+      user: user,
       totalPages,
       prevPage,
       nextPage,

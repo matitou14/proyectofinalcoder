@@ -10,7 +10,7 @@ import cartRoutes from "./routes/cartRoutes.js";
 import session from 'express-session'
 import MongoStore  from 'connect-mongo';
 import { fileURLToPath } from 'url';
-
+import passport from "passport";
 
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -38,12 +38,16 @@ app.use(session({
     resave: true, 
     saveUninitialized: true,
 }))
+
+app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', handlebars.engine());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 app.use(express.static(path.join(__dirname, 'public')));
+
+
 
 app.use('/session',sessionRoutes);
 app.use('/api/products', productRoutes);
@@ -52,8 +56,6 @@ app.use('/api/carts', cartViews);
 app.get('/', (req, res) => {
     res.render('index');
   });
-
-
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

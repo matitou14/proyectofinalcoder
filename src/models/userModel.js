@@ -10,12 +10,12 @@ const userSchema = new mongoose.Schema({
     password: String,
     cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'carts',
+        ref: 'Cart',
       },
       role: {
         type: String,
-        enum: ['admin', 'premium', 'regular'],
-        default: 'regular'
+        enum: ['admin', 'premium', 'user'],
+        default: 'user'
       }
       
 });
@@ -26,7 +26,7 @@ const UserModel = mongoose.model(userCollection, userSchema);
 
 userSchema.methods.verifyPassword = async function (password) {
     return bcrypt.compare(password, this.password);
-  };
+  }; 
 
 export default UserModel;
 

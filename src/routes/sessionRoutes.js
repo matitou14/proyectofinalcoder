@@ -1,6 +1,8 @@
 import express from 'express';
-import * as userController from '../controllers/userControllers.js';
+import  { loginGithub, loginGithubCallback, getCurrentUser } from '../controllers/userControllers.js';
 import UserModel from '../models/userModel.js';
+import bcrypt from 'bcrypt'
+import passport from 'passport';
 
 const router = express.Router();
 
@@ -13,6 +15,8 @@ router.get('/register',(req, res) => {
 //API para crear usuarios
 router.post('/register', async (req, res) => {
     const userNew = req.body
+    const hashedPassword = await bcrypt.hash(userNew.password, 10);
+    userNew.password = hashedPassword;
     const user = new UserModel(userNew)
     await user.save()
    
@@ -27,32 +31,28 @@ router.get('/login',(req,res) =>{(
 
 // API de login
 
-router.post('/login', async (req,res) =>{
-    const {email, password} = req.body
-    const user = await UserModel.findOne ({email,password}).lean().exec()
-    if (!user) {
-        return res.status(401).render('errors/db', {
-            error:'Error en el email y/o contraseña'
-        })
-    }
-
-    req.session.user = user
-    res.redirect('/api/products')
-})
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/api/products',
+    failureRedirect: '/session/login',
+    failureFlash: true
+  }), (req, res) => { if (req.user.email === 'adminCoder@coder.com') {
+    req.user.role = 'admin';
+  } else {
+    req.user.role = 'usuario';
+  }
+});
 
 //CERRAR LA SESION
 
-router.post('/logout', (req, res) =>{
-    req.session.destroy(err =>{
-        if(err) {
-            console.log(err)
-            res.status(500).render('errors/db',{
-                error: err
-            })
-        }else {
-            res.redirect('/session/login')
-        }
-    })
-})
+router.post('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/session/login');
+  });
+
+
+router.get('/github', loginGithub);
+router.get('/githubcallback', loginGithubCallback);
+router.get('/current', getCurrentUser);
+
 
 export default router;
