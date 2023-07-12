@@ -4,8 +4,11 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import bcrypt from 'bcrypt';
 import UserModel from '../models/userModel.js';
-import { jwtSecret } from '../config.js';
+import {jwtSecret }from './config.js';
+import dotenv from 'dotenv'
 
+
+dotenv.config();
 // Estrategia local
 passport.use(new LocalStrategy(
   { usernameField: 'email' },
@@ -46,9 +49,9 @@ passport.use(new JwtStrategy(jwtOptions, async (payload, done) => {
 
 // Estrategia GitHub
 passport.use(new GitHubStrategy({
-  clientID: 'your-client-id',
-  clientSecret: 'your-client-secret',
-  callbackURL: 'http://localhost:8080/auth/github/callback'
+  clientID: '0667237c199861fc3e7c',
+  clientSecret: '2f53ef56a935413a2451db8f41429c6698f99a50',
+  callbackURL: 'http://localhost:8080/session/githubcallback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     let user = await UserModel.findOne({ email: profile.emails[0].value }).lean().exec();
@@ -68,3 +71,17 @@ passport.use(new GitHubStrategy({
     return done(err);
   }
 }));
+passport.serializeUser((user, done) => {
+  done(null, user._id);  // Aquí se pasa el id del usuario para serializarlo en la sesión
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await UserModel.findById(id).lean().exec();  // Se busca al usuario con ese id
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
+
+export default passport

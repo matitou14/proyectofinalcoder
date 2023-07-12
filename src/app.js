@@ -11,10 +11,12 @@ import session from 'express-session'
 import MongoStore  from 'connect-mongo';
 import { fileURLToPath } from 'url';
 import passport from "passport";
+import passportConfig from './config/passportConfig.js'
 
+dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenv.config();
+
 const app = express ();
 const port = 8080;
 const dbUser = process.env.DB_USER;
@@ -34,11 +36,11 @@ app.use(session({
         },
         ttl:90
     }),
-    secret:'Al3j0',
+    secret:'Alejo',
     resave: true, 
     saveUninitialized: true,
 }))
-
+app.use(passport.initialize())
 app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
