@@ -4,7 +4,7 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import bcrypt from 'bcrypt';
 import UserModel from '../models/userModel.js';
-import {jwtSecret }from './config.js';
+import {jwtSecret, githubClient, githubClientSecret  }from './config.js';
 import dotenv from 'dotenv'
 
 
@@ -49,8 +49,8 @@ passport.use(new JwtStrategy(jwtOptions, async (payload, done) => {
 
 // Estrategia GitHub
 passport.use(new GitHubStrategy({
-  clientID: '0667237c199861fc3e7c',
-  clientSecret: '2f53ef56a935413a2451db8f41429c6698f99a50',
+  clientID: githubClient,
+  clientSecret:githubClientSecret ,
   callbackURL: 'http://localhost:8080/session/githubcallback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
