@@ -4,7 +4,7 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import bcrypt from 'bcrypt';
 import UserModel from '../models/userModel.js';
-import {jwtSecret, githubClient, githubClientSecret  }from './config.js';
+import {jwtSecret, githubClient, githubClientSecret}from './config.js';
 import dotenv from 'dotenv'
 
 

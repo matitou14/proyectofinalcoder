@@ -1,32 +1,36 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const userCollection = "users"
+export default class User {
+  static get model() {
+    return 'users';
+  }
 
-const userSchema = new mongoose.Schema({
-    first_name: String,
-    last_name: String,
-    email: String,
-    age: Number,
-    password: String,
-    cart: {
+  static get schema() {
+    return {
+      first_name: String,
+      last_name: String,
+      email: String,
+      age: Number,
+      password: String,
+      cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cart',
+        ref: 'Cart'
       },
       role: {
         type: String,
         enum: ['admin', 'premium', 'user'],
         default: 'user'
       }
-      
-});
+    };
+  }
 
+  // Agrega un método para verificar la contraseña del usuario
+  static async verifyPassword(password, hashedPassword) {
+    return bcrypt.compare(password, hashedPassword);
+  }
+}
 
-mongoose.set('strictQuery', false)
-const UserModel = mongoose.model(userCollection, userSchema);
+const UserModel = mongoose.model(User.model, new mongoose.Schema(User.schema));
 
-userSchema.methods.verifyPassword = async function (password) {
-    return bcrypt.compare(password, this.password);
-  }; 
-
-export default UserModel;
-
+export { UserModel };
