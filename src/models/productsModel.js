@@ -26,9 +26,10 @@ export default class Product {
   }
 }
 
-const ProductModel = mongoose.model(
-  Product.model,
-  new mongoose.Schema(Product.schema).plugin(mongoosePaginate)
-);
+// create schema and apply plugin
+const productSchema = new mongoose.Schema(Product.schema);
+productSchema.plugin(mongoosePaginate);
+
+const ProductModel = mongoose.model(Product.model, productSchema);
 
 export { ProductModel };

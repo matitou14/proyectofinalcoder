@@ -1,4 +1,5 @@
 import productService from '../services/productsServices.js';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const getProductsController = async (req, res) => {
   try {
@@ -29,6 +30,7 @@ const getProductsController = async (req, res) => {
       nextLink
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };

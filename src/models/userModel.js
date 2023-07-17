@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
-export default class User {
+class User {
   static get model() {
     return 'users';
   }
 
   static get schema() {
-    return {
+    return new mongoose.Schema({
       first_name: String,
       last_name: String,
       email: String,
@@ -22,15 +22,19 @@ export default class User {
         enum: ['admin', 'premium', 'user'],
         default: 'user'
       }
-    };
+    }, { timestamps: true });
   }
 
-  // Agrega un método para verificar la contraseña del usuario
   static async verifyPassword(password, hashedPassword) {
     return bcrypt.compare(password, hashedPassword);
   }
 }
 
-const UserModel = mongoose.model(User.model, new mongoose.Schema(User.schema));
+let UserModel;
+if (mongoose.models[User.model]) {
+  UserModel = mongoose.model(User.model);
+} else {
+  UserModel = mongoose.model(User.model, User.schema);
+}
 
-export { UserModel };
+export default UserModel;
