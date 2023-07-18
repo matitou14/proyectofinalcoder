@@ -1,4 +1,5 @@
-import { registerUser, loginUser } from '../services/userServices.js';
+// userControllers.js
+import * as userRepository from '../repositories/UsersRepository.js';
 import passport from 'passport';
 
 export const registerForm = (req, res) => {
@@ -8,7 +9,7 @@ export const registerForm = (req, res) => {
 export const register = async (req, res, next) => {
     try {
         const userNew = req.body;
-        const user = await registerUser(userNew);
+        const user = await userRepository.createUser(userNew);
         res.redirect('/session/login');
     } catch (error) {
         next(error);

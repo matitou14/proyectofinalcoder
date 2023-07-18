@@ -25,8 +25,8 @@ async function addProductToCart(req, res) {
   const productId = req.params.pid;
 
   try {
-    await cartServices.addProductToCart(cartId, productId);
-    res.json({ message: 'Producto agregado al carrito' });
+    const updatedCart = await cartServices.addProductToCart(cartId, productId);
+    res.json(updatedCart);
   } catch (error) {
     res.status(500).json({ error: 'Error al agregar el producto al carrito' });
   }
@@ -37,8 +37,8 @@ async function removeProductFromCart(req, res) {
   const productId = req.params.pid;
 
   try {
-    await cartServices.removeProductFromCart(cartId, productId);
-    res.json({ message: 'Producto eliminado del carrito' });
+    const updatedCart = await cartServices.removeProductFromCart(cartId, productId);
+    res.json(updatedCart);
   } catch (error) {
     res.status(500).json({ error: 'Error al eliminar el producto del carrito' });
   }
@@ -49,8 +49,8 @@ async function updateCart(req, res) {
   const { totalPrice } = req.body;
 
   try {
-    const cart = await cartServices.updateCart(cartId, totalPrice);
-    res.json(cart);
+    const updatedCart = await cartServices.updateCart(cartId, totalPrice);
+    res.json(updatedCart);
   } catch (error) {
     res.status(500).json({ error: 'Error al actualizar el carrito' });
   }
@@ -62,8 +62,8 @@ async function updateProductInCart(req, res) {
   const { quantity } = req.body;
 
   try {
-    await cartServices.updateProductInCart(cartId, productId, quantity);
-    res.json({ message: 'Producto actualizado en el carrito' });
+    const updatedCart = await cartServices.updateProductInCart(cartId, productId, quantity);
+    res.json(updatedCart);
   } catch (error) {
     res.status(500).json({ error: 'Error al actualizar el producto en el carrito' });
   }

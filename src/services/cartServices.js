@@ -1,56 +1,12 @@
-import Cart from '../models/cartModel.js';
+import CartRepository from '../repositories/CartRepository.js';
 
-async function getCartById(cartId) {
-  return await Cart.findById(cartId).populate('products');
-}
-
-async function createCart() {
-  return await Cart.create({});
-}
-
-async function addProductToCart(cartId, productId) {
-  const cart = await Cart.findById(cartId);
-
-  if (!cart) {
-    const newCart = new Cart({
-      _id: cartId,
-      products: [{ _id: productId }]
-    });
-    await newCart.save();
-  } else {
-    if (!cart.products.some((product) => product._id.toString() === productId)) {
-      cart.products.push({ _id: productId });
-      await cart.save();
-    }
-  }
-}
-
-async function removeProductFromCart(cartId, productId) {
-  const cart = await Cart.findById(cartId);
-
-  if (cart) {
-    cart.products = cart.products.filter((product) => product._id.toString() !== productId);
-    await cart.save();
-  }
-}
-
-async function updateCart(cartId, totalPrice) {
-  return await Cart.findByIdAndUpdate(cartId, { totalPrice }, { new: true });
-}
-
-async function updateProductInCart(cartId, productId, quantity) {
-  const cart = await Cart.findById(cartId);
-  const product = cart.products.find((product) => product._id.toString() === productId);
-
-  if (product) {
-    product.quantity = quantity;
-    await cart.save();
-  }
-}
-
-async function deleteCart(cartId) {
-  await Cart.findByIdAndDelete(cartId);
-}
+const getCartById = (cartId) => CartRepository.getCartById(cartId);
+const createCart = () => CartRepository.createCart();
+const addProductToCart = (cartId, productId, quantity) => CartRepository.addProductToCart(cartId, productId, quantity);
+const removeProductFromCart = (cartId, productId) => CartRepository.removeProductFromCart(cartId, productId);
+const updateCart = (cartId, totalPrice) => CartRepository.updateCart(cartId, totalPrice);
+const updateProductInCart = (cartId, productId, quantity) => CartRepository.updateProductInCart(cartId, productId, quantity);
+const deleteCart = (cartId) => CartRepository.deleteCart(cartId);
 
 export default {
   getCartById,
