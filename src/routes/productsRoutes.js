@@ -1,14 +1,26 @@
 
 import { Router } from 'express';
-import productController from '../controllers/productsControllers.js';
+import { ensureAdmin } from '../middlewares/auth.js';
+import {
+    getProductsController,
+    getProductById,
+    getProductByPid,
+    addProduct,
+    updateProduct,
+    deleteProduct
+  } from '../controllers/productsControllers.js';
+
 
 const router = Router();
 
-router.get('/', productController.getProductsController);
-router.get('/:id', productController.getProductById);
-router.get('/pid/:pid', productController.getProductByPid);
-router.post('/', productController.addProduct);
-router.put('/:pid', productController.updateProduct);
-router.delete('/:pid', productController.deleteProduct);
+router.get('/', getProductsController);
+router.get('/:id', getProductById);
+router.get('/pid/:pid', getProductByPid);
+// Solo el administrador puede crear, actualizar y eliminar productos.
+router.post('/', ensureAdmin, addProduct);
+router.put('/:pid', ensureAdmin, updateProduct);
+router.delete('/:pid', ensureAdmin, deleteProduct);
+
+
 
 export default router;

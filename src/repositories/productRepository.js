@@ -1,37 +1,45 @@
-// productRepository.js
-import * as productDAO from '../dao/productDAO.js';
+import ProductModel from '../models/productsModel.js';
 
-export async function getProducts(limit, page, sort, query) {
-    const paginatedResults = await productDAO.getProducts(limit, page, sort, query);
-    const result = {
-        products: paginatedResults.results,
-        totalPages: paginatedResults.pageCount,
-        prevPage: paginatedResults.previous ? paginatedResults.previous : null,
-        nextPage: paginatedResults.next ? paginatedResults.next : null,
-        page: paginatedResults.page,
-        hasPrevPage: paginatedResults.hasPreviousPages,
-        hasNextPage: paginatedResults.hasNextPages
-    };
+export const getProducts = async (limit, page, sort, query) => {
+  const filter = query ? { title: { $regex: query, $options: 'i' } } : {};
 
-    return result;
-}
+  const options = {
+    limit: limit,
+    page: page,
+    sort: sort ? { price: sort === 'asc' ? 1 : -1 } : undefined
+  };
 
-export async function getProductById(productId) {
-    return await productDAO.getProductById(productId);
-}
+  const paginatedResults = await ProductModel.paginate(filter, options);
 
-export async function getProductByPid(pid) {
-    return await productDAO.getProductByPid(pid);
-}
+  const result = {
+    products: paginatedResults.docs,
+    totalPages: paginatedResults.totalPages,
+    prevPage: paginatedResults.prevPage,
+    nextPage: paginatedResults.nextPage,
+    page: paginatedResults.page,
+    hasPrevPage: paginatedResults.hasPrevPage,
+    hasNextPage: paginatedResults.hasNextPage
+  };
 
-export async function createProduct(productData) {
-    return await productDAO.createProduct(productData);
-}
+  return result;
+};
 
-export async function updateProduct(pid, productData) {
-    return await productDAO.updateProduct(pid, productData);
-}
+export const getProductById = async (productId) => {
+  return await ProductModel.findById(productId);
+};
 
-export async function deleteProduct(pid) {
-    return await productDAO.deleteProduct(pid);
-}
+export const getProductByPid = async (pid) => {
+  return await ProductModel.findOne({ pid });
+};
+
+export const createProduct = async (productData) => {
+  return await ProductModel.create(productData);
+};
+
+export const updateProduct = async (pid, productData) => {
+  return await ProductModel.findOneAndUpdate({ pid }, productData, { new: true });
+};
+
+export const deleteProduct = async (pid) => {
+  return await ProductModel.findOneAndDelete({ pid });
+};

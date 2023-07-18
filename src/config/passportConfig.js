@@ -24,6 +24,7 @@ passport.use(new LocalStrategy(
       }
       return done(null, user);
     } catch (err) {
+      console.log(err)
       return done(err);
     }
   }

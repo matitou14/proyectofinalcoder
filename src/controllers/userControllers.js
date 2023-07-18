@@ -2,6 +2,7 @@
 import * as userRepository from '../repositories/UsersRepository.js';
 import passport from 'passport';
 
+
 export const registerForm = (req, res) => {
     res.render('sessions/register');
 };

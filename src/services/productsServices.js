@@ -1,54 +1,25 @@
-import Product from '../models/productsModel.js';
+import * as productsRepository from '../repositories/productRepository.js';
 
-const getProducts = async (limit, page, sort, query) => {
-  const filter = query ? { name: { $regex: query, $options: 'i' } } : {};
-
-  const options = {
-    limit: limit,
-    page: page,
-    sort: sort ? { price: sort === 'asc' ? 1 : -1 } : undefined
-  };
-
-  const paginatedResults = await Product.paginate(filter, options);
-
-  const result = {
-    products: paginatedResults.results,
-    totalPages: paginatedResults.pageCount,
-    prevPage: paginatedResults.previous ? paginatedResults.previous : null,
-    nextPage: paginatedResults.next ? paginatedResults.next : null,
-    page: paginatedResults.page,
-    hasPrevPage: paginatedResults.hasPreviousPages,
-    hasNextPage: paginatedResults.hasNextPages
-  };
-
-  return result;
+export const getProducts = async (limit, page, sort, query) => {
+  return await productsRepository.getProducts(limit, page, sort, query);
 };
 
-const getProductById = async (productId) => {
-  return await Product.findById(productId);
+export const getProductById = async (productId) => {
+  return await productsRepository.getProductById(productId);
 };
 
-const getProductByPid = async (pid) => {
-  return await Product.findOne({ pid });
+export const getProductByPid = async (pid) => {
+  return await productsRepository.getProductByPid(pid);
 };
 
-const createProduct = async (productData) => {
-  return await Product.create(productData);
+export const createProduct = async (productData) => {
+  return await productsRepository.createProduct(productData);
 };
 
-const updateProduct = async (pid, productData) => {
-  return await Product.findOneAndUpdate({ pid }, productData, { new: true });
+export const updateProduct = async (pid, productData) => {
+  return await productsRepository.updateProduct(pid, productData);
 };
 
-const deleteProduct = async (pid) => {
-  return await Product.findOneAndDelete({ pid });
-};
-
-export default {
-  getProducts,
-  getProductById,
-  getProductByPid,
-  createProduct,
-  updateProduct,
-  deleteProduct,
+export const deleteProduct = async (pid) => {
+  return await productsRepository.deleteProduct(pid);
 };

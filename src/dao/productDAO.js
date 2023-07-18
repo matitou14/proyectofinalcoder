@@ -1,8 +1,8 @@
-// productDAO.js
+
 import Product from '../models/productsModel.js';
 
 export async function getProducts(limit, page, sort, query) {
-    const filter = query ? { name: { $regex: query, $options: 'i' } } : {};
+    const filter = query ? { title: { $regex: query, $options: 'i' } } : {};
 
     const options = {
         limit: limit,
@@ -12,6 +12,7 @@ export async function getProducts(limit, page, sort, query) {
 
     const paginatedResults = await Product.paginate(filter, options);
     return paginatedResults;
+
 }
 
 export async function getProductById(productId) {
