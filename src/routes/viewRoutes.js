@@ -5,13 +5,13 @@ import { getCartById, purchaseCart } from '../controllers/cartControllers.js';
 const router = express.Router();
 
 // Para mostrar la lista de productos
-router.get('/products', getProductsController);
+router.get('/api/products', getProductsController);
 
 // Para mostrar el detalle de un producto específico
-router.get('/products/:id', getProductById);
+router.get('/api/products/:id', getProductById);
 
 // Para mostrar el carrito
-router.get('/cart/:cid', getCartById);  // Asegúrate de que estás pasando un ID de carrito aquí
+router.get('/api/cart/:cid', getCartById);  // Asegúrate de que estás pasando un ID de carrito aquí
 
 // Para realizar el checkout
 router.get('/checkout/:cid', purchaseCart); // Asegúrate de que estás pasando un ID de carrito aquí

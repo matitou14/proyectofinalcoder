@@ -10,7 +10,7 @@ export const ensureAdminOrPremium = (req, res, next) => {
   
 export const ensureUser = (req, res, next) => {
   console.log(req.session.user); 
-  if (req.session && req.session.user && req.session.user.role === 'user') {
+  if (req.session && req.session.user && req.session.user.role === "user") {
     next();
   } else {
     res.status(403).json({ error: 'Acceso denegado. Debe ser usuario para realizar esta acción.' });
