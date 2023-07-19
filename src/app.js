@@ -35,7 +35,7 @@ app.use(session({
             useNewUrlParser: true,
             useUnifiedTopology: true
         },
-        ttl:90
+        ttl:360
     }),
     secret:'Alejo',
     resave: true, 
