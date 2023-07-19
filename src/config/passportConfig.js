@@ -10,25 +10,29 @@ import dotenv from 'dotenv'
 
 dotenv.config();
 // Estrategia local
-passport.use(new LocalStrategy(
-  { usernameField: 'email' },
-  async (email, password, done) => {
-    try {
-      const user = await UserModel.findOne({ email }).lean().exec();
-      if (!user) {
-        return done(null, false, { message: 'Email not found' });
-      }
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return done(null, false, { message: 'Incorrect password' });
-      }
-      return done(null, user);
-    } catch (err) {
-      console.log(err)
-      return done(err);
-    }
+passport.use(new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password'
+}, async (email, password, done) => {
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+    return done(null, false, { message: 'User not found' });
   }
-));
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
+    return done(null, false, { message: 'Incorrect password' });
+  }
+  return done(null, user);
+}));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  const user = await UserModel.findById(id);
+  done(null, user);
+});
 
 // Estrategia JWT
 const jwtOptions = {
@@ -72,17 +76,6 @@ passport.use(new GitHubStrategy({
     return done(err);
   }
 }));
-passport.serializeUser((user, done) => {
-  done(null, user._id);  // Aquí se pasa el id del usuario para serializarlo en la sesión
-});
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await UserModel.findById(id).lean().exec();  // Se busca al usuario con ese id
-    done(null, user);
-  } catch (err) {
-    done(err, null);
-  }
-});
 
 export default passport

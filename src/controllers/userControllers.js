@@ -25,32 +25,53 @@ export const loginForm = (req, res) => {
 };
 
 export const login = (req, res, next) => {
-    userService.loginUser(req.body.email, req.body.password)
-        .then((user) => {
-            if (req.session) {
-              req.session.user = user;  // Guarda el usuario en la sesión
-            }
-            return UserModel.findByIdAndUpdate(user._id, { last_connection: new Date() })
-        })
-        .then(() => res.redirect('/api/products'))
-        .catch(err => next(err));
-  };
+    passport.authenticate('local', async (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
 
-export const logout = (req, res) => {
-    // Comprobar si req.session.user está definido
+        if (!user) {
+          
+            return res.redirect('/session/login');
+        }
+
+        req.logIn(user, async (err) => {
+            if (err) {
+                return next(err);
+            }
+
+            if (req.session) {
+                req.session.user = user;  // Guarda el usuario en la sesión
+            }
+
+            await UserModel.findByIdAndUpdate(user._id, { last_connection: new Date() });
+
+            return res.redirect('/api/products');
+        });
+    })(req, res, next);
+};
+export const logout = async (req, res) => {
     if (req.session && req.session.user) {
-      // Actualizar la última conexión del usuario
-      UserModel.findByIdAndUpdate(req.session.user._id, { last_connection: new Date() }, (err) => {
-        if (err) console.log(err);
-      });
+      try {
+        // Actualizar la última conexión del usuario
+        await UserModel.findByIdAndUpdate(req.session.user._id, { last_connection: new Date() });
   
-      req.session.destroy(function (err) {
-        res.redirect('/session/login');
-      });
+        req.session.destroy(err => {
+          if (err) {
+            console.log("Error in session.destroy:", err);
+            return res.status(500).json({ error: 'Error al cerrar la sesión' });
+          }
+          res.redirect('/session/login');
+        });
+      } catch (err) {
+        console.log("Error in findByIdAndUpdate:", err);
+      }
     } else {
       res.status(400).json({ error: 'Usuario no autenticado' });
     }
   };
+  
+
 
 export const loginGithub = passport.authenticate('github', { scope: ['user:email'] });
 
