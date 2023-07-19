@@ -44,7 +44,7 @@ async function purchaseCart(cartId) {
 
     try {
       // Verificar disponibilidad de stock y restar del inventario
-      await ProductService.verifyStockAndReduceInventory(productData);
+      await productService.verifyStockAndReduceInventory(productData);
 
       // Agregar el producto al ticket
       ticketData.products.push(productData);

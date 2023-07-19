@@ -9,7 +9,9 @@ export const ensureAdminOrPremium = (req, res, next) => {
 };
   
 export const ensureUser = (req, res, next) => {
-  console.log(req.session.user); 
+  console.log('Session:', req.session);  // Imprimirá toda la información de la sesión
+  console.log('User:', req.session.user);  // Imprimirá solo la información del usuario
+
   if (req.session && req.session.user && req.session.user.role === "user") {
     next();
   } else {

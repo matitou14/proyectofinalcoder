@@ -25,14 +25,16 @@ export const loginForm = (req, res) => {
 };
 
 export const login = (req, res, next) => {
-    userService.loginUser(req.body.email, req.body.password) 
+    userService.loginUser(req.body.email, req.body.password)
         .then((user) => {
-            req.user = user; // Almacenar el usuario en la solicitud para su uso posterior
+            if (req.session) {
+              req.session.user = user;  // Guarda el usuario en la sesión
+            }
             return UserModel.findByIdAndUpdate(user._id, { last_connection: new Date() })
         })
         .then(() => res.redirect('/api/products'))
         .catch(err => next(err));
-};
+  };
 
 export const logout = (req, res) => {
     // Comprobar si req.session.user está definido
