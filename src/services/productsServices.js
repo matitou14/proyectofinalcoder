@@ -25,7 +25,7 @@ export const deleteProduct = async (pid) => {
 };
 export const verifyStockAndReduceInventory = async (productData) => {
   const { productId, quantity } = productData;
-  const product = await ProductRepository.getProductById(productId);
+  const product = await productsRepository.getProductById(productId);
 
   if (!product) {
     throw new Error('Producto no encontrado');
@@ -37,7 +37,26 @@ export const verifyStockAndReduceInventory = async (productData) => {
 
   // Restar la cantidad del stock disponible
   product.stock -= quantity;
-  await ProductRepository.updateProduct(productId, product);
+  await productsRepository.updateProduct(productId, product);
 
   return product;
 }
+export const login = (req, res, next) => {
+  return new Promise((resolve, reject) => {
+      passport.authenticate('local', { failureRedirect: '/session/login', failureFlash: false }, (err, user, info) => {
+          if (err) {
+              return reject(err);
+          }
+          if (!user) {
+              // Aquí puedes personalizar tu mensaje de error
+              return reject(new Error('Authentication Failed'));
+          }
+          req.login(user, (err) => {
+              if (err) {
+                  return reject(err);
+              }
+              return resolve();
+          });
+      })(req, res, next);
+  });
+};

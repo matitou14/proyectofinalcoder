@@ -5,7 +5,13 @@ import * as productService from '../services/productsServices.js';
 
 const getCartById = (cartId) => CartRepository.getCartById(cartId);
 const createCart = () => CartRepository.createCart();
-const addProductToCart = (cartId, productId, quantity) => CartRepository.addProductToCart(cartId, productId, quantity);
+async function addProductToCart(cartId, productId, quantity, userId) {
+  const product = await productService.getProductById(productId);
+  if (product.createdBy.toString() === userId.toString() && user.role === 'premium') {
+    throw new Error('No puedes agregar a tu carrito un producto que tú creaste');
+  }
+  return CartRepository.addProductToCart(cartId, productId, quantity);
+}
 const removeProductFromCart = (cartId, productId) => CartRepository.removeProductFromCart(cartId, productId);
 const updateCart = (cartId, totalPrice) => CartRepository.updateCart(cartId, totalPrice);
 const updateProductInCart = (cartId, productId, quantity) => CartRepository.updateProductInCart(cartId, productId, quantity);

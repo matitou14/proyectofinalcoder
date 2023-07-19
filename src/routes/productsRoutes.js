@@ -1,6 +1,6 @@
 
 import { Router } from 'express';
-import { ensureAdmin } from '../middlewares/auth.js';
+import { ensureAdminOrPremium } from '../middlewares/auth.js';
 import {
     getProductsController,
     getProductById,
@@ -17,9 +17,9 @@ router.get('/', getProductsController);
 router.get('/:id', getProductById);
 router.get('/pid/:pid', getProductByPid);
 // Solo el administrador puede crear, actualizar y eliminar productos.
-router.post('/', ensureAdmin, addProduct);
-router.put('/:pid', ensureAdmin, updateProduct);
-router.delete('/:pid', ensureAdmin, deleteProduct);
+router.post('/', ensureAdminOrPremium, addProduct);
+router.put('/:pid', ensureAdminOrPremium, updateProduct);
+router.delete('/:pid', ensureAdminOrPremium, deleteProduct);
 
 
 

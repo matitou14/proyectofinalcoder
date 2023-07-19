@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Administración de Usuarios</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+    <h1>Administración de Usuarios</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+                <tr>
+                    <td>{{this.id}}</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.email}}</td>
+                    <td>{{this.role}}</td>
+                    <td>
+                        <button class="delete-btn" data-id="{{this.id}}">Eliminar</button>
+                        <button class="role-btn" data-id="{{this.id}}">{{#if (eq this.role 'admin')}}Quitar Admin{{else}}Hacer Admin{{/if}}</button>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

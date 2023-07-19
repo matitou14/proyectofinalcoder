@@ -15,10 +15,10 @@ export const getProductsController = async (req, res) => {
     const hasNextPage = result.hasNextPage;
     const prevLink = hasPrevPage ? `/products?limit=${limit}&page=${prevPage}&sort=${sort}&query=${query}` : null;
     const nextLink = hasNextPage ? `/products?limit=${limit}&page=${nextPage}&sort=${sort}&query=${query}` : null;
-    console.log(result.products);
+  
     res.render('products', {
       products: result.products,
-      user: user,
+      user: req.session.user,
       totalPages,
       prevPage,
       nextPage,
@@ -73,6 +73,26 @@ export const updateProduct = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
+  const product = await ProductModel.findById(req.params.id);
+    const user = await UserModel.findById(product.owner);
+
+    if (user.role === 'premium') {
+        // Enviar correo al usuario
+        let mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: 'Producto eliminado',
+            text: `El producto ${product.name} ha sido eliminado.`
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email enviado: ' + info.response);
+            }
+        });
+    }
   try {
     const pid = req.params.pid;
     const deletedProduct = await productService.deleteProduct(pid);

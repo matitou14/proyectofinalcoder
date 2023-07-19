@@ -5,8 +5,9 @@ import handlebars from "express-handlebars";
 import mongoose from "mongoose";
 import sessionRoutes from "./routes/sessionRoutes.js";
 import productRoutes from "./routes/productsRoutes.js";
-import cartViews from './routes/cartViews.js'
+import cartViews from './routes/viewRoutes.js'
 import cartRoutes from "./routes/cartRoutes.js";
+import viewRoutes from "./routes/viewRoutes.js"
 import session from 'express-session'
 import MongoStore  from 'connect-mongo';
 import { fileURLToPath } from 'url';
@@ -50,7 +51,7 @@ app.set('view engine', 'handlebars');
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-
+app.use('/', viewRoutes);
 app.use('/session',sessionRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
@@ -58,7 +59,18 @@ app.use('/api/carts', cartViews);
 app.get('/', (req, res) => {
     res.render('index');
   });
-
+app.get('/mail', async(req,res)=> {
+    let result = await transport.sendMail({
+      from:'Admin Tests <mat.rodri@gmail.com>',
+      to:'mat.rodri@gmail.com',
+      subject:'Prueba mailer',
+      html:`
+      <div>
+      <H1>Probando probaaaando</H1>
+      </div>
+    })`
+})
+}),
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });

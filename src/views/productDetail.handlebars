@@ -4,17 +4,10 @@
     <title>Detalles del producto</title>
   </head>
   <body>
-    <h1>Detalles del producto</h1>
-    <h2>{{product.name}}</h2>
-    <p>{{product.description}}</p>
-    <p>Precio: ${{product.price}}</p>
-    <p>Categoría: {{product.category}}</p>
-
-    <form action="/carts/add" method="POST">
-      <input type="hidden" name="product_id" value="{{product._id}}">
-      <button type="submit">Agregar al carrito</button>
-    </form>
-
-    <a href="/products">Volver a la lista de productos</a>
+   <h1>{{product.name}}</h1>
+<p>Precio: {{product.price}}</p>
+<p>{{product.description}}</p>
+<button onclick="window.location.href='/cart/add/{{product._id}}'">Agregar al carrito</button>
+    <a href="/api/products">Volver a la lista de productos</a>
   </body>
 </html>

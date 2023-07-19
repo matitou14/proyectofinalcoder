@@ -1,17 +1,15 @@
-import cartServices from '../services/cartServices.js';
-
-async function getCartById(req, res) {
+export async function getCartById(req, res) {
   const cartId = req.params.cid;
 
   try {
     const cart = await cartServices.getCartById(cartId);
-    res.json(cart);
+    res.render('cart', { cart });
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener el carrito' });
   }
 }
 
-async function createCart(req, res) {
+export async function createCart(req, res) {
   try {
     const cart = await cartServices.createCart();
     res.status(201).json(cart);
@@ -20,7 +18,7 @@ async function createCart(req, res) {
   }
 }
 
-async function addProductToCart(req, res) {
+export async function addProductToCart(req, res) {
   const cartId = req.params.cid;
   const productId = req.params.pid;
 
@@ -32,7 +30,7 @@ async function addProductToCart(req, res) {
   }
 }
 
-async function removeProductFromCart(req, res) {
+export async function removeProductFromCart(req, res) {
   const cartId = req.params.cid;
   const productId = req.params.pid;
 
@@ -44,7 +42,7 @@ async function removeProductFromCart(req, res) {
   }
 }
 
-async function updateCart(req, res) {
+export async function updateCart(req, res) {
   const cartId = req.params.cid;
   const { totalPrice } = req.body;
 
@@ -56,7 +54,7 @@ async function updateCart(req, res) {
   }
 }
 
-async function updateProductInCart(req, res) {
+export async function updateProductInCart(req, res) {
   const cartId = req.params.cid;
   const productId = req.params.pid;
   const { quantity } = req.body;
@@ -69,7 +67,7 @@ async function updateProductInCart(req, res) {
   }
 }
 
-async function deleteCart(req, res) {
+export async function deleteCart(req, res) {
   const cartId = req.params.cid;
 
   try {
@@ -79,25 +77,14 @@ async function deleteCart(req, res) {
     res.status(500).json({ error: 'Error al eliminar el carrito' });
   }
 }
-async function purchaseCart(req, res) {
+
+export async function purchaseCart(req, res) {
   const cartId = req.params.cid;
 
   try {
     const purchasedCart = await cartServices.purchaseCart(cartId);
-    res.render('purchase', { ticket: ticketData.ticket, productsNotPurchased: ticketData.productsNotPurchased });
+    res.render('checkout', { ticket: purchasedCart.ticket, productsNotPurchased: purchasedCart.productsNotPurchased });
   } catch (error) {
     res.status(500).json({ error: 'Error al finalizar la compra del carrito' });
   }
 }
-
-
-export default {
-  getCartById,
-  createCart,
-  addProductToCart,
-  removeProductFromCart,
-  updateCart,
-  updateProductInCart,
-  deleteCart,
-  purchaseCart,
-};
