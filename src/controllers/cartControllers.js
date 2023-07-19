@@ -79,6 +79,17 @@ async function deleteCart(req, res) {
     res.status(500).json({ error: 'Error al eliminar el carrito' });
   }
 }
+async function purchaseCart(req, res) {
+  const cartId = req.params.cid;
+
+  try {
+    const purchasedCart = await cartServices.purchaseCart(cartId);
+    res.render('purchase', { ticket: ticketData.ticket, productsNotPurchased: ticketData.productsNotPurchased });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al finalizar la compra del carrito' });
+  }
+}
+
 
 export default {
   getCartById,
@@ -87,5 +98,6 @@ export default {
   removeProductFromCart,
   updateCart,
   updateProductInCart,
-  deleteCart
+  deleteCart,
+  purchaseCart,
 };

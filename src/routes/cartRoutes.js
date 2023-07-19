@@ -11,5 +11,9 @@ router.delete('/:cid/products/:pid', ensureUser, cartController.removeProductFro
 router.put('/:cid', ensureUser, cartController.updateCart);
 router.put('/:cid/products/:pid', ensureUser, cartController.updateProductInCart);
 router.delete('/:cid', ensureUser, cartController.deleteCart);
+router.post('/:cid/purchase', ensureUser, cartController.purchaseCart);
+
 
 export default router;
+
+// Verificar que funcione el purchase del cart.,-

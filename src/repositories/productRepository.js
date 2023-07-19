@@ -12,7 +12,7 @@ export const getProducts = async (limit, page, sort, query) => {
   const paginatedResults = await ProductModel.paginate(filter, options);
 
   const result = {
-    products: paginatedResults.docs,
+    products: paginatedResults.docs.map(doc => doc.toJSON()),
     totalPages: paginatedResults.totalPages,
     prevPage: paginatedResults.prevPage,
     nextPage: paginatedResults.nextPage,
@@ -25,21 +25,26 @@ export const getProducts = async (limit, page, sort, query) => {
 };
 
 export const getProductById = async (productId) => {
-  return await ProductModel.findById(productId);
+  const product = await ProductModel.findById(productId).lean();
+  return product.toJSON();
 };
 
 export const getProductByPid = async (pid) => {
-  return await ProductModel.findOne({ pid });
+  const product = await ProductModel.findOne({ pid }).lean();
+  return product.toJSON();
 };
 
 export const createProduct = async (productData) => {
-  return await ProductModel.create(productData);
+  const product = await ProductModel.create(productData);
+  return product.toJSON();
 };
 
 export const updateProduct = async (pid, productData) => {
-  return await ProductModel.findOneAndUpdate({ pid }, productData, { new: true });
+  const updatedProduct = await ProductModel.findOneAndUpdate({ pid }, productData, { new: true }).lean();
+  return updatedProduct.toJSON();
 };
 
 export const deleteProduct = async (pid) => {
-  return await ProductModel.findOneAndDelete({ pid });
+  const deletedProduct = await ProductModel.findOneAndDelete({ pid }).lean();
+  return deletedProduct.toJSON();
 };

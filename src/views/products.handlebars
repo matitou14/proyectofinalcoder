@@ -7,51 +7,50 @@
   </form>
 
   {{!-- views/products.hbs --}}
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <title>Productos</title>
-    </head>
-    <body>
-      <h1>Productos</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Productos</title>
+  </head>
+  <body>
+    <h1>Productos</h1>
 
-      {{#if products}}
-        <ul>
-          {{#each products}}
-            <li>
-              <h2>{{@root.title}}</h2>
-              <p>{{@root.description}}</p>
-              <p>Precio: ${{@root.price}}</p>
+    {{#if products}}
+      <ul>
+        {{#each products}}
+          <li>
+            <h2>{{this.title}}</h2>
+            <p>{{this.description}}</p>
+            <p>Precio: ${{this.price}}</p>
 
-              {{#if @root.cart}}
-                <form action="api/carts/{{@root.cart._id}}/product/{{@root._id}}" method="POST">
-                  <label for="quantity">Cantidad:</label>
-                  <input type="number" id="quantity" name="quantity" value="1">
-                  <button type="submit">Agregar al carrito</button>
-                </form>
-              {{else}}
-                <a href="/products/{{@root._id}}">Ver detalles</a>
-                <form action="/api/carts" method="POST">
-                  <input type="hidden" name="product" value="{{@root._id}}">
-                  <label for="quantity">Cantidad:</label>
-                  <input type="number" id="quantity" name="quantity" value="1">
-                  <button type="submit">Agregar al carrito</button>
-                </form>
-              {{/if}}
-            </li>
-          {{/each}}
-        </ul>
-      {{else}}
-        <p>No hay productos disponibles</p>
-      {{/if}}
+            {{#if this.cart}}
+              <form action="api/carts/{{this.cart._id}}/product/{{this._id}}" method="POST">
+                <label for="quantity">Cantidad:</label>
+                <input type="number" id="quantity" name="quantity" value="1">
+                <button type="submit">Agregar al carrito</button>
+              </form>
+            {{else}}
+              <a href="/products/{{this._id}}">Ver detalles</a>
+              <form action="/api/carts" method="POST">
+                <input type="hidden" name="product" value="{{this._id}}">
+                <label for="quantity">Cantidad:</label>
+                <input type="number" id="quantity" name="quantity" value="1">
+                <button type="submit">Agregar al carrito</button>
+              </form>
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p>No hay productos disponibles</p>
+    {{/if}}
 
-      {{#if prevPage}}
-        <a href="/products?page={{prevPage}}">Anterior</a>
-      {{/if}}
+    {{#if prevPage}}
+      <a href="/api/products?page={{prevPage}}">Anterior</a>
+    {{/if}}
 
-      {{#if nextPage}}
-        <a href="/products?page={{nextPage}}">Siguiente</a>
-      {{/if}}
-    </body>
-  </html>
-</div>
+    {{#if nextPage}}
+      <a href="/api/products?page={{nextPage}}">Siguiente</a>
+    {{/if}}
+  </body>
+</html>

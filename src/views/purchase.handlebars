@@ -1,0 +1,17 @@
+
+<h1>Compra realizada</h1>
+{{#if ticket}}
+  <h2>Ticket</h2>
+  <p>Código: {{ticket.code}}</p>
+  <p>Fecha y hora de compra: {{ticket.purchase_datetime}}</p>
+  <p>Monto total: {{ticket.amount}}</p>
+  <p>Comprador: {{ticket.purchaser}}</p>
+{{/if}}
+{{#if productsNotPurchased.length}}
+  <h2>Productos no comprados</h2>
+  <ul>
+    {{#each productsNotPurchased}}
+      <li>{{this}}</li>
+    {{/each}}
+  </ul>
+{{/if}}

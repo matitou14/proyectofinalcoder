@@ -28,6 +28,9 @@ class CartRepository {
   static deleteCart(cartId) {
     return CartDAO.deleteCart(cartId);
   }
-}
 
+ static async purchaseCart(cartId) {
+
+}
+}
 export default CartRepository;
